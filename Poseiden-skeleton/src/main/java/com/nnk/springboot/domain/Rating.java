@@ -15,23 +15,28 @@ public class Rating {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "id")
     Integer id;
 
-    @Column(name = "moodysRating")
     @Size(max = 125)
     String moodysRating;
 
-    @Column(name = "sandPRating")
     @Size(max = 125)
     String sandPRating;
 
-    @Column(name = "fitchRating")
     @Size(max = 125)
     String fitchRating;
 
-    @Column(name = "orderNumber")
     @PositiveOrZero
     Integer orderNumber;
+
+    public Rating() {
+    }
+
+    public Rating(String moodysRating, String sandPRating, String fitchRating, Integer orderNumber) {
+        this.moodysRating = moodysRating;
+        this.sandPRating = sandPRating;
+        this.fitchRating = fitchRating;
+        this.orderNumber = orderNumber;
+    }
 
 }

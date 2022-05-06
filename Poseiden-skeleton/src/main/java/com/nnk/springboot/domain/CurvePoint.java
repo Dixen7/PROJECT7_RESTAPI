@@ -19,28 +19,30 @@ public class CurvePoint {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "id")
     Integer id;
 
     @NotNull(message = "Curve Id must not be null")
     @PositiveOrZero
-    @Column(name = "curveId")
     Integer curveId;
 
     @CreationTimestamp
-    @Column(name = "asOfDate")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     LocalDate asOfDate;
 
-    @Column(name = "term")
     Double term;
-
-    @Column(name = "value")
     Double value;
 
     @CreationTimestamp
     @DateTimeFormat(pattern="yyyy-MM-dd")
-    @Column(name = "creationDate")
     LocalDate creationDate;
+
+    public CurvePoint() {
+    }
+
+    public CurvePoint(Integer curveId, Double term, Double value) {
+        this.curveId = curveId;
+        this.term = term;
+        this.value = value;
+    }
 
 }

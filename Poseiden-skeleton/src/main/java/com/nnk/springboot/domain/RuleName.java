@@ -14,31 +14,35 @@ public class RuleName {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "id")
     Integer id;
 
-    @Column(name = "name")
     @Size(max = 125)
     String name;
 
-    @Column(name = "description")
     @Size(max = 125)
     String description;
 
-    @Column(name = "json")
     @Size(max = 125)
     String json;
 
-    @Column(name = "template")
     @Size(max = 512)
     String template;
 
-    @Column(name = "sqlStr")
     @Size(max = 125)
     String sqlStr;
 
-    @Column(name = "sqlPart")
     @Size(max = 125)
     String sqlPart;
 
+    public RuleName() {
+    }
+
+    public RuleName(String name, String description, String json, String template, String sqlStr, String sqlPart) {
+        this.name = name;
+        this.description = description;
+        this.json = json;
+        this.template = template;
+        this.sqlStr = sqlStr;
+        this.sqlPart = sqlPart;
+    }
 }
