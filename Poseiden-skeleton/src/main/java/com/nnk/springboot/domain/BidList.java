@@ -21,7 +21,7 @@ public class BidList {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    Integer BidListId;
+    Integer bidListId;
 
     @Size(max = 30)
     @NotBlank(message = "Account is mandatory")

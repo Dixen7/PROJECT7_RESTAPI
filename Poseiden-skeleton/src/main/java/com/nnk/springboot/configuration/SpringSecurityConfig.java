@@ -65,7 +65,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .userService(auth2UserService)
                 .and()
                 .successHandler(oAuth2LoginSuccessHandler)
-                /*.defaultSuccessUrl("/bidList/list")*/
+                .defaultSuccessUrl("/bidList/list")
                 .and()
                 .rememberMe()
                 .and()

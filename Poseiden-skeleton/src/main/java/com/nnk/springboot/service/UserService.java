@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 
-
 @Service
 @SessionAttributes("user")
 public class UserService implements UserDetailsService {
