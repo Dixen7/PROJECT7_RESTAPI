@@ -21,9 +21,6 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private UserService userService;
-
     @RequestMapping("/user/list")
     public String home(Model model)
     {
@@ -32,14 +29,14 @@ public class UserController {
     }
 
     @GetMapping("/user/add")
-    public String addUser(User bid) {
+    public String addUser(User user) {
         return "user/add";
     }
 
     @PostMapping("/user/validate")
     public String validate(@Valid User user, BindingResult result, Model model) {
         if (!result.hasErrors()) {
-            userService.save(user);
+            userRepository.save(user);
             model.addAttribute("users", userRepository.findAll());
             return "redirect:/user/list";
         }
@@ -61,7 +58,7 @@ public class UserController {
             return "user/update";
         }
         user.setId(id);
-        userService.save(user);
+        userRepository.save(user);
         model.addAttribute("users", userRepository.findAll());
         return "redirect:/user/list";
     }

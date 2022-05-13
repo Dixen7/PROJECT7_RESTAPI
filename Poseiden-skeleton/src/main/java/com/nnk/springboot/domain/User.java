@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.nnk.springboot.validation.ValidPassword;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +29,7 @@ public class User {
     @NotBlank(message = "Username is mandatory")
     private String username;
 
+    @ValidPassword
     @NotBlank(message = "Password is mandatory")
     private String password;
 
