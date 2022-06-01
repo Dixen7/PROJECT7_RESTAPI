@@ -39,14 +39,6 @@ public class User implements UserDetails {
     @NotBlank(message = "Role is mandatory")
     private String role;
 
-    @Column(name = "auth_provider")
-    @Enumerated(EnumType.STRING)
-    private Provider provider = Provider.LOCAL;
-
-    public enum Provider {
-        LOCAL, GOOGLE
-    }
-
     public User() {
     }
 

@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import java.util.List;
 import java.util.Optional;
 
-
-@Service
-@SessionAttributes("user")
 public interface UserService {
 
     List<User> findAll();
