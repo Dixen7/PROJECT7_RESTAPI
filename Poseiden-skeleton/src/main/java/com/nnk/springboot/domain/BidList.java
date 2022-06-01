@@ -20,8 +20,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class BidList {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    Integer bidListId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Integer BidListId;
 
     @Size(max = 30)
     @NotBlank(message = "Account is mandatory")

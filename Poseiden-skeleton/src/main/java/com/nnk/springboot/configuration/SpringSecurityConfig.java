@@ -1,97 +1,67 @@
 package com.nnk.springboot.configuration;
 
-import com.nnk.springboot.service.UserService;
-import com.nnk.springboot.service.security.CustomerOAuth2UserService;
-import com.nnk.springboot.service.security.OAuth2LoginSuccessHandler;
+import com.nnk.springboot.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final UserServiceImpl userServiceImpl;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    UserDetailsService userDetailsService;
-
-    @Autowired
-    UserService userService;
-
-    @Bean
-    AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
+    public SpringSecurityConfig(UserServiceImpl userServiceImpl, PasswordEncoder passwordEncoder) {
+        this.userServiceImpl = userServiceImpl;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
-    }
-
-    /**
-     * Spring Security configuration for http page access & process
-     */
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf()
-                .disable()
-                .authorizeRequests()
-                .antMatchers("/**", "/oauth2/**")
-                .permitAll()
+        http.authorizeRequests()
+                .antMatchers("/home", "/").permitAll()
+                .antMatchers("/user/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login").permitAll()
-                .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/bidList/list", true)
-                .permitAll()
+                .failureUrl("/login?error=true")
                 .and()
                 .oauth2Login()
-                .loginPage("/login")
-                .userInfoEndpoint()
-                .userService(auth2UserService)
-                .and()
-                .successHandler(oAuth2LoginSuccessHandler)
-                .defaultSuccessUrl("/bidList/list")
-                .and()
-                .rememberMe()
+                .defaultSuccessUrl("/bidList/list", true)
+                .failureUrl("/login?error=true")
                 .and()
                 .logout()
-                .logoutUrl("/logout")
+                .logoutUrl("/app-logout")
                 .clearAuthentication(true)
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "remember-me")
-                .logoutSuccessUrl("/login");
+                .logoutSuccessUrl("/login")
+                .and()
+                .exceptionHandling().accessDeniedPage("/403");
     }
 
-    /**
-     * Spring Security to encode user password
-     * Required for Spring Security
-     *
-     * @return PasswordEncoder using BCrypt encryption
-     */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .antMatchers("/resources/**", "/static.css/**");
+    }
+
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(userServiceImpl);
+        return provider;
     }
 
-
-    @Autowired
-    private CustomerOAuth2UserService auth2UserService;
-
-    @Autowired
-    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 }

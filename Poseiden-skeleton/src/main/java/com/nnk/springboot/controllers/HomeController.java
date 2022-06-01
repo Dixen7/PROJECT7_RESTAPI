@@ -14,18 +14,15 @@ public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-	@RequestMapping("/")
-	public String home(Model model) {
-		logger.debug("GET: /");
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken))
-			return "redirect:/bidList/list";
+	@RequestMapping("/home")
+	public String home(Model model)
+	{
 		return "home";
 	}
 
 	@RequestMapping("/admin/home")
-	public String adminHome(Model model) {
-		logger.info("methode adminHome : /admin/home");
+	public String adminHome(Model model)
+	{
 		return "redirect:/bidList/list";
 	}
 

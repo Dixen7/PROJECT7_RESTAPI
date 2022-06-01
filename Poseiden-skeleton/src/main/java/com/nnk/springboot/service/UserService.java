@@ -1,39 +1,27 @@
 package com.nnk.springboot.service;
 
-import com.nnk.springboot.domain.CustomUserDetails;
 import com.nnk.springboot.domain.User;
-import com.nnk.springboot.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.nnk.springboot.domain.DTO.UserDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.SessionAttributes;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
 @SessionAttributes("user")
-public class UserService implements UserDetailsService {
+public interface UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    List<User> findAll();
 
-    @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(userName);
-        return new CustomUserDetails(user);
-    }
+    User createUser(UserDTO userDTO);
 
-    public User getUserByEmail(String userName){
-        return userRepository.findByUsername(userName);
-    }
+    Optional<User> findByIdAndUpdate(Integer id, UserDTO userDTO);
 
-    public void save(User user) {
-        if (user.getPassword() != null){
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
-        }
-        userRepository.save(user);
-    }
+    Optional<User> findById(Integer id);
+
+    void delete(User user);
+
+    UserDTO userEntityToDTO(User userToUpdate);
 }

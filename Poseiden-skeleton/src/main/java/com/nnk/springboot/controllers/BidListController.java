@@ -19,6 +19,7 @@ import java.util.Optional;
 public class BidListController {
 
     private static final Logger log = LogManager.getLogger(BidListController.class);
+
     @Autowired
     private BidListService bidListService;
 

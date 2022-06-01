@@ -13,32 +13,19 @@ import org.springframework.web.servlet.ModelAndView;
 public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    private UserRepository userRepository;
-
-    @GetMapping("login")
-    public ModelAndView login() {
-        logger.info("GET: /login");
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("login");
-        return mav;
+    @GetMapping("/")
+    public String login() {
+        return "home";
     }
 
-    @GetMapping("secure/article-details")
-    public ModelAndView getAllUserArticles() {
-        logger.info("GET: /secure/article-details");
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("users", userRepository.findAll());
-        mav.setViewName("user/list");
-        return mav;
-    }
-
-    @GetMapping("error")
+    @GetMapping("/403")
     public ModelAndView error() {
-        logger.info("GET: /error");
         ModelAndView mav = new ModelAndView();
         String errorMessage= "You are not authorized for the requested data.";
         mav.addObject("errorMsg", errorMessage);
         mav.setViewName("403");
         return mav;
     }
+
+
 }
