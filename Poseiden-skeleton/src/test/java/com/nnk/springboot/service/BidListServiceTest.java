@@ -71,7 +71,7 @@ public class BidListServiceTest {
     @Test
     public void deleteTest() {
         bidListService.delete(bidList3);
-        verify(bidListRepository, Mockito.times(1)).delete(bidList3);
+        verify(bidListRepository).delete(bidList3);
     }
 
 

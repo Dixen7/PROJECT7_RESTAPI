@@ -68,7 +68,7 @@ public class RatingServiceTest {
     @Test
     public void deleteTest() {
         ratingService.delete(rating3);
-        verify(ratingRepository, Mockito.times(1)).delete(rating3);
+        verify(ratingRepository).delete(rating3);
 
     }
 }

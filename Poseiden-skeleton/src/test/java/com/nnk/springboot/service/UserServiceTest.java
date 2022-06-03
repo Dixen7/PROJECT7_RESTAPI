@@ -74,6 +74,6 @@ public class UserServiceTest {
     @Test
     public void deleteTest() {
         userService.delete(user3);
-        verify(userRepository, Mockito.times(1)).delete(user3);
+        verify(userRepository).delete(user3);
     }
 }

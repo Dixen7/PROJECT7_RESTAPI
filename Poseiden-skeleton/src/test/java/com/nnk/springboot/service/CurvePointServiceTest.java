@@ -70,7 +70,7 @@ public class CurvePointServiceTest {
     @Test
     public void deleteTest() {
         curvePointService.delete(curvePoint3);
-        verify(curvePointRepository, Mockito.times(1)).delete(curvePoint3);
+        verify(curvePointRepository).delete(curvePoint3);
 
     }
 }

@@ -71,7 +71,7 @@ public class TradeServiceTest {
     @Test
     public void deleteTest() {
         tradeService.delete(trade3);
-        verify(tradeRepository, Mockito.times(1)).delete(trade3);
+        verify(tradeRepository).delete(trade3);
 
     }
 }

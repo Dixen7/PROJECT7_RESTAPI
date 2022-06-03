@@ -19,7 +19,9 @@ import java.util.Optional;
 
 @Controller
 public class CurveController {
+
     private static final Logger log = LogManager.getLogger(CurveController.class);
+
     @Autowired
     private CurvePointService curvePointService;
 
@@ -63,8 +65,7 @@ public class CurveController {
     }
 
     @PostMapping("/curvePoint/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @Valid CurvePoint curvePoint,
-                            BindingResult result) {
+    public String updateBid(@PathVariable("id") Integer id, @Valid CurvePoint curvePoint, BindingResult result) {
         if (result.hasErrors()) {
             return "curvePoint/update";
         }

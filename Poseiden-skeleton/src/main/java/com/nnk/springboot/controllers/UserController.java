@@ -33,12 +33,6 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("/user/add")
-    public String addUser(UserDTO userDTO) {
-        return "user/add";
-    }
-
-
     @PostMapping("/user/validate")
     public String validate(@Valid UserDTO userDTO, BindingResult result) {
         if (!result.hasErrors()) {

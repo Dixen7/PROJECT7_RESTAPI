@@ -70,7 +70,7 @@ public class RuleNameServiceTest {
     @Test
     public void deleteTest() {
         ruleNameService.delete(ruleName3);
-        verify(ruleNameRepository, Mockito.times(1)).delete(ruleName3);
+        verify(ruleNameRepository).delete(ruleName3);
 
     }
 }
