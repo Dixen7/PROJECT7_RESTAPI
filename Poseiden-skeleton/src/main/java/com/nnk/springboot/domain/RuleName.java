@@ -1,43 +1,43 @@
 package com.nnk.springboot.domain;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotBlank;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Setter
+@DynamicUpdate
 @Entity
 @Table(name = "rulename")
 public class RuleName {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    Integer id;
+    private Integer id;
+    @NotBlank(message = "Name is mandatory")
+    private String name;
+    @NotBlank(message = "Description is mandatory")
+    private String description;
+    @NotBlank(message = "Json is mandatory")
+    private String json;
+    @NotBlank(message = "Template is mandatory")
+    private String template;
+    @NotBlank(message = "SqlStr is mandatory")
+    private String sqlStr;
+    @NotBlank(message = "SqlPart is mandatory")
+    private String sqlPart;
 
-    @Size(max = 125)
-    String name;
-
-    @Size(max = 125)
-    String description;
-
-    @Size(max = 125)
-    String json;
-
-    @Size(max = 512)
-    String template;
-
-    @Size(max = 125)
-    String sqlStr;
-
-    @Size(max = 125)
-    String sqlPart;
 
     public RuleName() {
     }
 
-    public RuleName(String name, String description, String json, String template, String sqlStr, String sqlPart) {
+    public RuleName(@NotBlank String name, @NotBlank String description,
+                    @NotBlank String json, @NotBlank String template, @NotBlank String sqlStr,
+                    @NotBlank String sqlPart) {
+        super();
         this.name = name;
         this.description = description;
         this.json = json;

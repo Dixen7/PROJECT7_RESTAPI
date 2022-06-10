@@ -8,7 +8,21 @@
 </head>
 <body>
 <div class="container">
-	<div th:replace="navtemplate :: navbar"></div>
+	<div class="row">
+		<div class="col-6">
+			<a href="/bidList/list">Bid List</a>&nbsp;|&nbsp;
+			<a href="/curvePoint/list">Curve Points</a>&nbsp;|&nbsp;
+			<a href="/rating/list">Ratings</a>&nbsp;|&nbsp;
+			<a href="/trade/list">Trade</a>&nbsp;|&nbsp;
+			<a href="/ruleName/list">Rule</a>
+		</div>
+		<div class="col-6 text-right">
+			Logged in user: <b th:inline="text"  class="user" th:text="${userInfo}?:''"> [[${#httpServletRequest.remoteUser}]] </b>
+			<form th:action="@{/logout}" method="POST">
+				<input type="submit" value="Logout"/>
+			</form>
+		</div>
+	</div>
 	<div class="row"><h2>Bid List</h2></div>
 	<div class="row">
 		<a href="/bidList/add" class="btn btn-primary btn-sm">Add New</a>
@@ -23,14 +37,14 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr th:each="bid : ${bidList}">
-				<td style="width: 10%" th:text="${bid.getBidListId()}"></td>
-				<td th:text="${bid.getAccount()}"></td>
-				<td th:text="${bid.getType()}"></td>
-				<td style="width: 25%" th:text="${bid.getBidQuantity()}"></td>
+			<tr th:each="bid : ${listBid}">
+				<td style="width: 10%" th:text="${bid.bidListId}"></td>
+				<td th:text="${bid.account}"></td>
+				<td th:text="${bid.type}"></td>
+				<td style="width: 25%" th:text="${bid.bidQuantity}"></td>
 				<td style="width: 15%" class="text-center">
-					<a th:href="@{/bidList/update/{id}(id=${bid.getBidListId()})}">Edit</a>&nbsp;|&nbsp;
-					<a th:href="@{/bidList/delete/{id}(id=${bid.getBidListId()})}">Delete</a>
+					<a th:href="@{/bidList/update/{id}(id=${bid.bidListId})}">Edit</a>&nbsp;|&nbsp;
+					<a th:href="@{/bidList/delete/{id}(id=${bid.bidListId})}">Delete</a>
 				</td>
 			</tr>
 			</tbody>

@@ -4,13 +4,15 @@
     <title>Spring Boot</title>
 </head>
 <body>
-<h3>Access Denied Exception</h3>
+<h3>You're not authorized to access this page. Please login or contact you're admin for further access</h3>
 <div>
-    Logged in user: <b th:inline="text"  class="user" th:with="userName=${T(com.nnk.springboot.service.UtilsService).getCurrentUser()}" th:text="${userName}" ></b>
+    Logged in user: <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
+    <br>
+    <a th:href="@{/home}">Return to Home Page</a>
     <form th:action="@{/app-logout}" method="POST">
         <input type="submit" value="Logout"/>
     </form>
 </div>
 <p class="error" th:text="${errorMsg}">Error</p>
 </body>
-</html>   
+</html>

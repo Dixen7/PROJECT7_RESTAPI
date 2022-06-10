@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+<h3> LOGIN PAGE </h3>
+
+<form th:action="@{/login}" method="post">
+
+    <div th:if="${param.error}">
+        <div class="alert alert-danger">Invalid username or password</div>
+    </div>
+    <div th:if="${param.logout}">
+        <div class="alert alert-info">You have been logged out</div>
+    </div>
+
+    <input class="form-control" type="text" name="username"
+           placeholder="Username" maxlength="45" required>
+
+    <input class="form-control" type="password" name="password"
+           placeholder="Password" maxlength="30" required>
+
+    <a href="/oauth2/authorization/github">Login with GitHub</a>
+
+    <button class="btn btn-primary" type="submit">Login</button>
+
+
+</form>
+</body>
+</html>

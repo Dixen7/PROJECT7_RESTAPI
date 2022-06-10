@@ -1,48 +1,47 @@
 package com.nnk.springboot.domain;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Setter
+@DynamicUpdate
 @Entity
 @Table(name = "curvepoint")
 public class CurvePoint {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    Integer id;
+    private Integer id;
+    @NotNull(message = "CurveId is mandatory")
+    @Digits(fraction = 0, integer = 10)
+    @Positive(message = "CurveId must be positive")
+    private Integer curveId;
+    private Timestamp asOfDate;
+    @NotNull(message = "Term is mandatory")
+    @Digits(fraction = 2, integer = 10)
+    @Positive(message = "Term must be positive")
+    private Double term;
+    @NotNull(message = "Value is mandatory")
+    @Digits(fraction = 2, integer = 10)
+    @Positive(message = "Value must be positive")
+    private Double value;
+    private Timestamp creationDate;
 
-    @NotNull(message = "Curve Id must not be null")
-    @PositiveOrZero
-    Integer curveId;
-
-    @CreationTimestamp
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    LocalDate asOfDate;
-
-    Double term;
-    Double value;
-
-    @CreationTimestamp
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    LocalDate creationDate;
 
     public CurvePoint() {
     }
 
-    public CurvePoint(Integer curveId, Double term, Double value) {
+    public CurvePoint(@NotNull Integer curveId, @NotBlank Double term,
+                      @NotBlank Double value) {
         this.curveId = curveId;
         this.term = term;
         this.value = value;
     }
-
 }

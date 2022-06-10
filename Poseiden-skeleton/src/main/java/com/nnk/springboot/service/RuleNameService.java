@@ -1,16 +1,19 @@
 package com.nnk.springboot.service;
 
+import java.util.List;
+
 import com.nnk.springboot.domain.RuleName;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface RuleNameService {
-    List<RuleName> findAll();
 
-    RuleName createRuleName(RuleName ruleName);
+    List<RuleName> getAllRuleName();
 
-    Optional<RuleName> findById(Integer id);
+    RuleName saveRuleName(RuleName ruleName);
 
-    void delete(RuleName ruleName);
+    RuleName updateRuleName(Integer id, RuleName ruleName);
+
+    RuleName getRuleNameById(Integer id);
+
+    boolean deleteRuleNameById(Integer id);
+
 }

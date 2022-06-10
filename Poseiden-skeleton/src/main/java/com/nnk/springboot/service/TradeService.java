@@ -1,16 +1,19 @@
 package com.nnk.springboot.service;
 
+import java.util.List;
+
 import com.nnk.springboot.domain.Trade;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface TradeService {
-    List<Trade> findAll();
 
-    Trade createTrade(Trade trade);
+    List<Trade> getAllTrade();
 
-    Optional<Trade> findById(Integer id);
+    Trade saveTrade(Trade trade);
 
-    void delete(Trade trade);
+    Trade updateTrade(Integer id, Trade trade);
+
+    Trade getTradeById(Integer id);
+
+    boolean deleteById(Integer id);
+
 }

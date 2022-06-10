@@ -1,78 +1,102 @@
 package com.nnk.springboot.service;
 
-import com.nnk.springboot.domain.BidList;
-import com.nnk.springboot.repositories.BidListRepository;
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.repositories.BidListRepository;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class BidListServiceTest {
 
     @Autowired
     private BidListService bidListService;
-    @MockBean
+    @Autowired
     private BidListRepository bidListRepository;
 
-    private BidList bidList1;
-    private BidList bidList2;
-    private BidList bidList3;
-    private List<BidList> bidList;
+    BidList bidTest = new BidList("Account Test", "Type Test", 10d);
+    BidList bidDeleteTest = new BidList("Account Delete Test", "Type Delete Test", 30d);
+    BidList bidUpdateTest = new BidList("Account Update Test", "Type Update Test", 50d);
 
-    @Before
-    public void setUp() {
-        bidList1 = new BidList("Account Test", "Type Test", 10d);
-        bidList2 = new BidList("Account Test", "Type Test", 20d);
-        bidList2.setBidListId(2);
-        bidList3 = new BidList("Account Test", "Type Test", 30d);
-        bidList = Arrays.asList(bidList1, bidList2, bidList3);
+    @BeforeEach
+    public void setDb() {
+        bidListRepository.deleteAll();
+        bidListService.saveBidList(bidTest);
+        bidListService.saveBidList(bidDeleteTest);
+        bidListService.saveBidList(bidUpdateTest);
     }
 
     @Test
-    public void findAllTest() {
-        when(bidListRepository.findAll()).thenReturn(this.bidList);
-        List<BidList> bidListTest = bidListService.findAll();
-        assertThat(bidListTest).isSameAs(bidList);
-        assertThat(bidListTest).hasSize(3);
+    public void testGetAllBidList() {
+        List<BidList> bidListTest = bidListService.getAllBidList();
+        assertNotNull(bidListTest);
+        assertTrue(bidListTest.size()>0);
     }
 
     @Test
-    public void createBidListTest() {
-        when(bidListRepository.save(any(BidList.class))).thenReturn(bidList1);
-        BidList bidListTest = bidListService.createBidList(this.bidList1);
-        assertThat(bidListTest).isEqualTo(this.bidList1);
+    public void testSaveBidList() {
+        BidList saveBidListTest = new BidList("Account Save Test", "Type Save Test", 20d);
+        saveBidListTest = bidListService.saveBidList(saveBidListTest);
+        assertNotNull(saveBidListTest);
+        assertEquals("Account Save Test",saveBidListTest.getAccount());
     }
 
     @Test
-    public void findByIdTest() {
-
-        when(bidListRepository.findById(2)).thenReturn(Optional.ofNullable(this.bidList2));
-        BidList bidListFoundById = bidListService.findById(2).get();
-        assertThat(bidListFoundById).isEqualTo(this.bidList2);
-
+    public void testSaveBidList_Null() {
+        BidList saveBidListTest = null;
+        saveBidListTest = bidListService.saveBidList(saveBidListTest);
+        assertNull(saveBidListTest);
     }
 
     @Test
-    public void deleteTest() {
-        bidListService.delete(bidList3);
-        verify(bidListRepository).delete(bidList3);
+    public void testUpdateBidList() {
+        Integer bidupdateIdTest = bidUpdateTest.getBidListId();
+        BidList updateBidListTest = new BidList("Account Test Update", "Type Test Update", 40d);
+        updateBidListTest = bidListService.updateBidList(bidupdateIdTest, updateBidListTest);
+        assertNotNull(updateBidListTest);
+        assertEquals("Account Test Update",updateBidListTest.getAccount());
     }
 
+    @Test
+    public void testUpdateBidList_Null() {
+        BidList updateBidListTest = new BidList("Account Test Update", "Type Test Update", 40d);
+        updateBidListTest = bidListService.updateBidList(999999999, updateBidListTest);
+        assertNull(updateBidListTest);
+    }
 
+    @Test
+    public void testGetBidListById() {
+        Integer bidIdTest = bidTest.getBidListId();
+        BidList bidByIdTest = bidListService.getBidListById(bidIdTest);
+        assertNotNull(bidByIdTest);
+        assertEquals("Type Test", bidByIdTest.getType());
+    }
+
+    @Test
+    public void testGetBidListById_Null() {
+        BidList bidByIdTest = bidListService.getBidListById(999999999);
+        assertNull(bidByIdTest);
+    }
+
+    @Test
+    public void testDeleteBidListById() {
+        Integer biddeleteIdTest = bidDeleteTest.getBidListId();
+        bidListService.deleteBidListById(biddeleteIdTest);
+        assertNull(bidListService.getBidListById(biddeleteIdTest));
+    }
+
+    @Test
+    public void testDeleteBidListById_False() {
+        assertFalse(bidListService.deleteBidListById(999999999));
+    }
 }

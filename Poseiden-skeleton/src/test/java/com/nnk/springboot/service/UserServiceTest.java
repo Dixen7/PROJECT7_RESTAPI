@@ -1,79 +1,107 @@
 package com.nnk.springboot.service;
 
-import com.nnk.springboot.domain.DTO.UserDTO;
-import com.nnk.springboot.repositories.UserRepository;
-import com.nnk.springboot.domain.User;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
+import com.nnk.springboot.configuration.UserRole;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import com.nnk.springboot.domain.User;
+import com.nnk.springboot.repositories.UserRepository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserServiceTest {
 
     @Autowired
     private UserService userService;
-
-    @MockBean
+    @Autowired
     private UserRepository userRepository;
 
-    private UserDTO user1DTO;
-    private User user1;
-    private User user2;
-    private User user3;
-    private List<User> userList;
+    User userTest = new User("UserName", "Password", "FullName", UserRole.USER.name());
+    User userUpdateTest = new User("UserName updaTest", "Password updaTest", "FullName updaTest", UserRole.USER.name());
+    User userDeleteTest = new User("UserName deleTest", "Password deleTest", "FullName deleTest", UserRole.USER.name());
 
-    @Before
-    public void setUp() {
-        user1DTO = new UserDTO("username1", "passwd123", "UserName Full", "USER");
-        user1 = new User("username1", "passwd123", "UserName Full", "USER");
-        user2 = new User("username2", "passwd123", "UserName Full", "USER");
-        user2.setId(2);
-        user3 = new User("username3", "passwd123", "UserName Full", "USER");
-        userList = Arrays.asList(user2, user3);
+    @BeforeEach
+    public void setDb() {
+        userRepository.deleteAll();
+        userService.saveUser(userTest);
+        userService.saveUser(userDeleteTest);
+        userService.saveUser(userUpdateTest);
     }
 
     @Test
-    public void findAllTest() {
-        when(userRepository.findAll()).thenReturn(this.userList);
-        List<User> UserTest = userService.findAll();
-        assertThat(UserTest).isSameAs(userList);
-        assertThat(UserTest).hasSize(2);
+    public void testGetAllUser() {
+        List<User> userListTest = userService.getAllUser();
+        assertNotNull(userListTest);
+        assertTrue(userListTest.size()>0);
     }
 
     @Test
-    public void createUserTest() {
-        when(userRepository.save(any(User.class))).thenReturn(user1);
-        User UserTest = userService.createUser(this.user1DTO);
-        assertThat(UserTest).isEqualTo(this.user1);
+    public void testSaveUser() {
+        User saveUserTest = new User("UserName saveTest", "Password saveTest", "FullName saveTest", UserRole.USER.name());
+        saveUserTest = userService.saveUser(saveUserTest);
+        assertNotNull(saveUserTest);
+        assertEquals("UserName saveTest",saveUserTest.getUsername());
     }
 
     @Test
-    public void findByIdTest() {
-
-        when(userRepository.findById(2)).thenReturn(Optional.ofNullable(this.user2));
-        User UserFoundById = userService.findById(2).get();
-        assertThat(UserFoundById).isEqualTo(this.user2);
-
+    public void testSaveUser_Null() {
+        User saveUserTest = null;
+        saveUserTest = userService.saveUser(saveUserTest);
+        assertNull(saveUserTest);
     }
 
     @Test
-    public void deleteTest() {
-        userService.delete(user3);
-        verify(userRepository).delete(user3);
+    public void testupdateUser() {
+        userUpdateTest = userService.getUserByUserName(userUpdateTest.getUsername());
+        Integer tradeUpdateIdUser = userUpdateTest.getId();
+        User updateUserTest = new User("UserName Testupdt", "Password Testupdt", "FullName Testupdt", UserRole.USER.name());
+        updateUserTest = userService.updateUser(tradeUpdateIdUser, updateUserTest);
+        assertNotNull(updateUserTest);
+        assertEquals("FullName Testupdt",updateUserTest.getFullname());
     }
+
+    @Test
+    public void testupdateUser_Null() {
+        User updateUserTest = new User("UserName Testupdt", "Password Testupdt", "FullName Testupdt", UserRole.USER.name());
+        updateUserTest = userService.updateUser(999999999, updateUserTest);
+        assertNull(updateUserTest);
+    }
+
+    @Test
+    public void testgetUserById() {
+        userTest = userService.getUserByUserName(userTest.getUsername());
+        Integer userIdTest = userTest.getId();
+        User userByIdTest = userService.getUserById(userIdTest);
+        assertNotNull(userByIdTest);
+        assertEquals("UserName", userByIdTest.getUsername());
+    }
+
+    @Test
+    public void testgetUserById_Null() {
+        User userByIdTest = userService.getUserById(999999999);
+        assertNull(userByIdTest);
+    }
+
+    @Test
+    public void testdeleteUserById() {
+        userDeleteTest = userService.getUserByUserName(userDeleteTest.getUsername());
+        Integer userDeleteIdTest = userDeleteTest.getId();
+        userService.deleteUserById(userDeleteIdTest);
+        assertNull(userService.getUserById(userDeleteIdTest));
+    }
+
+    @Test
+    public void testdeleteUserById_False() {
+        assertFalse(userService.deleteUserById(999999999));
+    }
+
 }

@@ -1,16 +1,19 @@
 package com.nnk.springboot.service;
 
+import java.util.List;
+
 import com.nnk.springboot.domain.CurvePoint;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface CurvePointService {
-    List<CurvePoint> findAll();
 
-    CurvePoint createCurvePoint(CurvePoint curvePoint);
+    List<CurvePoint> getAllCurvePoint();
 
-    Optional<CurvePoint> findById(Integer id);
+    CurvePoint saveCurvePoint(CurvePoint curvePoint);
 
-    void delete(CurvePoint curvePoint);
+    CurvePoint updateCurvePoint(Integer id, CurvePoint curvePoint);
+
+    CurvePoint getCurvePointById(Integer id);
+
+    boolean deleteCurvePointById(Integer id);
+
 }

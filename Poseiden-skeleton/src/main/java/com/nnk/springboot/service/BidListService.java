@@ -7,11 +7,13 @@ import java.util.Optional;
 
 public interface BidListService {
 
-    List<BidList> findAll();
+    List<BidList> getAllBidList();
 
-    BidList createBidList(BidList bid);
+    BidList saveBidList(BidList bidList);
 
-    Optional<BidList> findById(Integer id);
+    BidList updateBidList(Integer id, BidList bidList);
 
-    void delete(BidList bidList);
+    BidList getBidListById(Integer id);
+
+    boolean deleteBidListById(Integer id);
 }

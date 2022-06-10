@@ -8,7 +8,16 @@
 </head>
 <body>
 <div class="container">
-	<div th:replace="navtemplate :: navbar"></div>
+	<div class="row">
+		<div class="col-6">
+
+		</div>
+		<div class="col-6 text-right">
+			<a th:href="@{/home}">Home</a>&nbsp;|&nbsp;<b th:inline="text"  class="user" th:text="${userInfo}?:''"> [[${#httpServletRequest.remoteUser}]] </b><form th:action="@{/logout}" method="POST">
+			<input type="submit" value="Logout"/>
+		</form>
+		</div>
+	</div>
 	<div class="row"><h2>User List</h2></div>
 	<div class="row">
 		<a href="/user/add" class="btn btn-primary btn-sm">Add New</a>
@@ -35,7 +44,6 @@
 			</tr>
 			</tbody>
 		</table>
-		<div th:text="${roleInfo}"></div>
 	</div>
 </div>
 </body>

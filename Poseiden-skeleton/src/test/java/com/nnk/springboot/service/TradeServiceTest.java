@@ -1,77 +1,102 @@
 package com.nnk.springboot.service;
 
-import com.nnk.springboot.domain.Trade;
-import com.nnk.springboot.repositories.TradeRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import com.nnk.springboot.domain.Trade;
+import com.nnk.springboot.repositories.TradeRepository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class TradeServiceTest {
 
     @Autowired
     private TradeService tradeService;
-
-    @MockBean
+    @Autowired
     private TradeRepository tradeRepository;
 
-    private Trade trade1;
-    private Trade trade2;
-    private Trade trade3;
-    private List<Trade> tradeList;
+    Trade tradeTest = new Trade("Trade Account", "Type", 10d);
+    Trade tradeDeleteTest = new Trade("Trade Account delTest", "Type delTest", 20d);
+    Trade tradeUpdateTest = new Trade("Trade Account updaTest", "Type updaTest", 50d);
 
-    @Before
-    public void setUp() {
-        trade1 = new Trade("Trade Account 1", "Type", 10);
-        trade2 = new Trade("Trade Account 2", "Type", 12);
-        trade2.setTradeId(2);
-        trade3 = new Trade("Trade Account 3", "Type", 15);
-        tradeList = Arrays.asList(trade1, trade2, trade3);
+    @BeforeEach
+    public void setDb() {
+        tradeRepository.deleteAll();
+        tradeService.saveTrade(tradeTest);
+        tradeService.saveTrade(tradeDeleteTest);
+        tradeService.saveTrade(tradeUpdateTest);
     }
 
     @Test
-    public void findAllTest() {
-        when(tradeRepository.findAll()).thenReturn(this.tradeList);
-        List<Trade> TradeTest = tradeService.findAll();
-        assertThat(TradeTest).isSameAs(tradeList);
-        assertThat(TradeTest).hasSize(3);
+    public void testGetAllTrade() {
+        List<Trade> tradeListTest = tradeService.getAllTrade();
+        assertNotNull(tradeListTest);
+        assertTrue(tradeListTest.size()>0);
     }
 
     @Test
-    public void createTradeTest() {
-        when(tradeRepository.save(any(Trade.class))).thenReturn(trade1);
-        Trade TradeTest = tradeService.createTrade(this.trade1);
-        assertThat(TradeTest).isEqualTo(this.trade1);
+    public void testSaveTrade() {
+        Trade saveTradeTest = new Trade("Trade Account saveTest", "Type saveTest", 30d);
+        saveTradeTest = tradeService.saveTrade(saveTradeTest);
+        assertNotNull(saveTradeTest);
+        assertEquals("Trade Account saveTest",saveTradeTest.getAccount());
     }
 
     @Test
-    public void findByIdTest() {
-
-        when(tradeRepository.findById(2)).thenReturn(Optional.ofNullable(this.trade2));
-        Trade TradeFoundById = tradeService.findById(2).get();
-        assertThat(TradeFoundById).isEqualTo(this.trade2);
-
+    public void testSaveTrade_Null() {
+        Trade saveTradeTest = null;
+        saveTradeTest = tradeService.saveTrade(saveTradeTest);
+        assertNull(saveTradeTest);
     }
 
     @Test
-    public void deleteTest() {
-        tradeService.delete(trade3);
-        verify(tradeRepository).delete(trade3);
+    public void testUpdateTrade() {
+        Integer tradeUpdateIdTest = tradeUpdateTest.getTradeId();
+        Trade updateTradeTest = new Trade("Trade Account Testupdt", "Type Testupdt", 40d);
+        updateTradeTest = tradeService.updateTrade(tradeUpdateIdTest, updateTradeTest);
+        assertNotNull(updateTradeTest);
+        assertEquals("Trade Account Testupdt",updateTradeTest.getAccount());
+    }
 
+    @Test
+    public void testUpdateTrade_Null() {
+        Trade updateTradeTest = new Trade("Trade Account Testupdt", "Type Testupdt", 40d);
+        updateTradeTest = tradeService.updateTrade(999999999, updateTradeTest);
+        assertNull(updateTradeTest);
+    }
+
+    @Test
+    public void testGetTradeById() {
+        Integer tradeIdTest = tradeTest.getTradeId();
+        Trade tradeByIdTest = tradeService.getTradeById(tradeIdTest);
+        assertNotNull(tradeByIdTest);
+        assertEquals("Type", tradeByIdTest.getType());
+    }
+
+    @Test
+    public void testGetTradeById_Null() {
+        Trade tradeByIdTest = tradeService.getTradeById(999999999);
+        assertNull(tradeByIdTest);
+    }
+
+    @Test
+    public void testDeleteById() {
+        Integer tradeDeleteIdTest = tradeDeleteTest.getTradeId();
+        tradeService.deleteById(tradeDeleteIdTest);
+        assertNull(tradeService.getTradeById(tradeDeleteIdTest));
+    }
+
+    @Test
+    public void testDeleteById_False() {
+        assertFalse(tradeService.deleteById(999999999));
     }
 }

@@ -1,24 +1,21 @@
 package com.nnk.springboot.service;
 
-import com.nnk.springboot.domain.User;
-import com.nnk.springboot.domain.DTO.UserDTO;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.SessionAttributes;
-
 import java.util.List;
-import java.util.Optional;
+
+import com.nnk.springboot.domain.User;
 
 public interface UserService {
 
-    List<User> findAll();
+    List<User> getAllUser();
 
-    User createUser(UserDTO userDTO);
+    User saveUser(User user);
 
-    Optional<User> findByIdAndUpdate(Integer id, UserDTO userDTO);
+    User updateUser(Integer id, User user);
 
-    Optional<User> findById(Integer id);
+    User getUserById(Integer id);
 
-    void delete(User user);
+    boolean deleteUserById(Integer id);
 
-    UserDTO userEntityToDTO(User userToUpdate);
+    User getUserByUserName(String username);
+
 }

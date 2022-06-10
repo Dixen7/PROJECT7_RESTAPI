@@ -1,74 +1,102 @@
 package com.nnk.springboot.service;
 
-import com.nnk.springboot.domain.Rating;
-import com.nnk.springboot.repositories.RatingRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import com.nnk.springboot.domain.Rating;
+import com.nnk.springboot.repositories.RatingRepository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class RatingServiceTest {
+
     @Autowired
     private RatingService ratingService;
-    @MockBean
+    @Autowired
     private RatingRepository ratingRepository;
 
-    private Rating rating1;
-    private Rating rating2;
-    private Rating rating3;
-    private List<Rating> ratingList;
+    Rating ratingTest = new Rating("Moodys Rating", "Sand PRating", "Fitch Rating", 10);
+    Rating ratingDeleteTest = new Rating("Moodys Rating del", "Sand PRating del", "Fitch Rating del", 20);
+    Rating ratingUpdateTest = new Rating("Moodys Rating update", "Sand PRating update", "Fitch Rating update", 50);
 
-    @Before
-    public void setUp() {
-        rating1 = new Rating("Moodys Rating", "Sand PRating", "Fitch Rating", 10);
-        rating2 = new Rating("Moodys Rating", "Sand PRating", "Fitch Rating", 20);
-        rating2.setId(2);
-        rating3 = new Rating("Moodys Rating", "Sand PRating", "Fitch Rating", 30);
-        ratingList = Arrays.asList(rating1, rating2, rating3);
+    @BeforeEach
+    public void setDb() {
+        ratingRepository.deleteAll();
+        ratingService.saveRating(ratingTest);
+        ratingService.saveRating(ratingDeleteTest);
+        ratingService.saveRating(ratingUpdateTest);
     }
 
     @Test
-    public void findAllTest() {
-        when(ratingRepository.findAll()).thenReturn(this.ratingList);
-        List<Rating> RatingTest = ratingService.findAll();
-        assertThat(RatingTest).isSameAs(ratingList);
-        assertThat(RatingTest).hasSize(3);
+    public void testGetAllRating() {
+        List<Rating> ratingListTest = ratingService.getAllRating();
+        assertNotNull(ratingListTest);
+        assertTrue(ratingListTest.size()>0);
     }
 
     @Test
-    public void createRatingTest() {
-        when(ratingRepository.save(any(Rating.class))).thenReturn(rating1);
-        Rating RatingTest = ratingService.createRating(this.rating1);
-        assertThat(RatingTest).isEqualTo(this.rating1);
+    public void testSaveRating() {
+        Rating saveRatingTest = new Rating("Moodys Rating savetest", "Sand PRating savetest", "Fitch Rating savetest", 30);
+        saveRatingTest = ratingService.saveRating(saveRatingTest);
+        assertNotNull(saveRatingTest);
+        assertEquals("Moodys Rating savetest",saveRatingTest.getMoodysRating());
     }
 
     @Test
-    public void findByIdTest() {
-
-        when(ratingRepository.findById(2)).thenReturn(Optional.ofNullable(this.rating2));
-        Rating RatingFoundById = ratingService.findById(2).get();
-        assertThat(RatingFoundById).isEqualTo(this.rating2);
-
+    public void testSaveRating_Null() {
+        Rating saveRatingTest = null;
+        saveRatingTest = ratingService.saveRating(saveRatingTest);
+        assertNull(saveRatingTest);
     }
 
     @Test
-    public void deleteTest() {
-        ratingService.delete(rating3);
-        verify(ratingRepository).delete(rating3);
+    public void testUpdateRating() {
+        Integer ratingUpdateIdTest = ratingUpdateTest.getId();
+        Rating updateRatingTest = new Rating("Moodys Rating updatetest", "Sand PRating updatetest", "Fitch Rating updatetest", 40);
+        updateRatingTest = ratingService.updateRating(ratingUpdateIdTest, updateRatingTest);
+        assertNotNull(updateRatingTest);
+        assertEquals("Moodys Rating updatetest",updateRatingTest.getMoodysRating());
+    }
 
+    @Test
+    public void testUpdateRating_Null() {
+        Rating updateRatingTest = new Rating("Moodys Rating updatetest", "Sand PRating updatetest", "Fitch Rating updatetest", 40);
+        updateRatingTest = ratingService.updateRating(999999999, updateRatingTest);
+        assertNull(updateRatingTest);
+    }
+
+    @Test
+    public void testGetRatingById() {
+        Integer ratingIdTest = ratingTest.getId();
+        Rating ratingByIdTest = ratingService.getRatingById(ratingIdTest);
+        assertNotNull(ratingByIdTest);
+        assertEquals("Sand PRating", ratingByIdTest.getSandPRating());
+    }
+
+    @Test
+    public void testGetRatingById_Null() {
+        Rating ratingByIdTest = ratingService.getRatingById(999999999);
+        assertNull(ratingByIdTest);
+    }
+
+    @Test
+    public void testDeleteRatingById() {
+        Integer ratingDeleteIdTest = ratingDeleteTest.getId();
+        ratingService.deleteRatingById(ratingDeleteIdTest);
+        assertNull(ratingService.getRatingById(ratingDeleteIdTest));
+    }
+
+    @Test
+    public void testDeleteRatingById_False() {
+        assertFalse(ratingService.deleteRatingById(999999999));
     }
 }

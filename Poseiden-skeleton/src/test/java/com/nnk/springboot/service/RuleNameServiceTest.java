@@ -1,76 +1,102 @@
 package com.nnk.springboot.service;
 
-import com.nnk.springboot.domain.RuleName;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import com.nnk.springboot.domain.RuleName;
+import com.nnk.springboot.repositories.RuleNameRepository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class RuleNameServiceTest {
 
     @Autowired
     private RuleNameService ruleNameService;
+    @Autowired
+    private RuleNameRepository ruleNameRepository;
 
-    @MockBean
-    private com.nnk.springboot.repositories.RuleNameRepository ruleNameRepository;
+    RuleName ruleTest = new RuleName("Rule Name", "Description", "Json", "Template", "SQL", "SQL Part");
+    RuleName ruleDeleteTest = new RuleName("Rule Name delTest", "Description delTest", "Json delTest", "Template delTest", "SQL delTest", "SQL Part delTest");
+    RuleName ruleUpdateTest = new RuleName("Rule Name updaTest", "Description updaTest", "Json updaTest", "Template updaTest", "SQL updaTest", "SQL Part updaTest");
 
-    private com.nnk.springboot.domain.RuleName ruleName1;
-    private RuleName ruleName2;
-    private RuleName ruleName3;
-    private List<RuleName> ruleNameList;
-
-    @Before
-    public void setUp() {
-        ruleName1 = new RuleName("Rule Name 1", "Description", "Json", "Template", "SQL", "SQL Part");
-        ruleName2 = new RuleName("Rule Name 2", "Description", "Json", "Template", "SQL", "SQL Part");
-        ruleName2.setId(2);
-        ruleName3 = new RuleName("Rule Name 3", "Description", "Json", "Template", "SQL", "SQL Part");
-        ruleNameList = Arrays.asList(ruleName1, ruleName2, ruleName3);
+    @BeforeEach
+    public void setDb() {
+        ruleNameRepository.deleteAll();
+        ruleNameService.saveRuleName(ruleTest);
+        ruleNameService.saveRuleName(ruleDeleteTest);
+        ruleNameService.saveRuleName(ruleUpdateTest);
     }
 
     @Test
-    public void findAllTest() {
-        when(ruleNameRepository.findAll()).thenReturn(this.ruleNameList);
-        List<RuleName> RuleNameTest = ruleNameService.findAll();
-        assertThat(RuleNameTest).isSameAs(ruleNameList);
-        assertThat(RuleNameTest).hasSize(3);
+    public void testGetAllRuleName() {
+        List<RuleName> ruleListTest = ruleNameService.getAllRuleName();
+        assertNotNull(ruleListTest);
+        assertTrue(ruleListTest.size()>0);
     }
 
     @Test
-    public void createRuleNameTest() {
-        when(ruleNameRepository.save(any(RuleName.class))).thenReturn(ruleName1);
-        RuleName RuleNameTest = ruleNameService.createRuleName(this.ruleName1);
-        assertThat(RuleNameTest).isEqualTo(this.ruleName1);
+    public void testSaveRuleName() {
+        RuleName saveRuleTest = new RuleName("Rule Name saveTest", "Description saveTest", "Json saveTest", "Template saveTest", "SQL saveTest", "SQL Part saveTest");
+        saveRuleTest = ruleNameService.saveRuleName(saveRuleTest);
+        assertNotNull(saveRuleTest);
+        assertEquals("Json saveTest",saveRuleTest.getJson());
     }
 
     @Test
-    public void findByIdTest() {
-
-        when(ruleNameRepository.findById(2)).thenReturn(Optional.ofNullable(this.ruleName2));
-        RuleName RuleNameFoundById = ruleNameService.findById(2).get();
-        assertThat(RuleNameFoundById).isEqualTo(this.ruleName2);
-
+    public void testSaveRuleName_Null() {
+        RuleName saveRuleTest = null;
+        saveRuleTest = ruleNameService.saveRuleName(saveRuleTest);
+        assertNull(saveRuleTest);
     }
 
     @Test
-    public void deleteTest() {
-        ruleNameService.delete(ruleName3);
-        verify(ruleNameRepository).delete(ruleName3);
+    public void testUpdateRuleName() {
+        Integer ruleUpdateIdTest = ruleUpdateTest.getId();
+        RuleName updateRuleTest = new RuleName("Rule Name Testupdt", "Description Testupdt", "Json Testupdt", "Template Testupdt", "SQL Testupdt", "SQL Part Testupdt");
+        updateRuleTest = ruleNameService.updateRuleName(ruleUpdateIdTest, updateRuleTest);
+        assertNotNull(updateRuleTest);
+        assertEquals("Json Testupdt",updateRuleTest.getJson());
+    }
 
+    @Test
+    public void testUpdateRuleName_Null() {
+        RuleName updateRuleTest = new RuleName("Rule Name Testupdt", "Description Testupdt", "Json Testupdt", "Template Testupdt", "SQL Testupdt", "SQL Part Testupdt");
+        updateRuleTest = ruleNameService.updateRuleName(999999999, updateRuleTest);
+        assertNull(updateRuleTest);
+    }
+
+    @Test
+    public void testGetRuleNameById() {
+        Integer ruleIdTest = ruleTest.getId();
+        RuleName ruleByIdTest = ruleNameService.getRuleNameById(ruleIdTest);
+        assertNotNull(ruleByIdTest);
+        assertEquals("Template", ruleByIdTest.getTemplate());
+    }
+
+    @Test
+    public void testGetRuleNameById_Null() {
+        RuleName ruleByIdTest = ruleNameService.getRuleNameById(999999999);
+        assertNull(ruleByIdTest);
+    }
+
+    @Test
+    public void testDeleteRuleNameById() {
+        Integer ruleDeleteIdTest = ruleDeleteTest.getId();
+        ruleNameService.deleteRuleNameById(ruleDeleteIdTest);
+        assertNull(ruleNameService.getRuleNameById(ruleDeleteIdTest));
+    }
+
+    @Test
+    public void testDeleteRuleNameById_False() {
+        assertFalse(ruleNameService.deleteRuleNameById(999999999));
     }
 }
