@@ -43,13 +43,13 @@ public class CurvePointServiceTest {
         assertTrue(curePointListTest.size()>0);
     }
 
-//    @Test
-//    public void testSaveCurvePoint() {
-//        CurvePoint saveCurvePointTest = new CurvePoint(30, 30d, 50d);
-//        saveCurvePointTest = curvePointService.saveCurvePoint(saveCurvePointTest);
-//        assertNotNull(saveCurvePointTest);
-//        assertEquals(30d,saveCurvePointTest.getTerm());
-//    }
+    @Test
+    public void testSaveCurvePoint() {
+        CurvePoint saveCurvePointTest = new CurvePoint(30, 30d, 50d);
+        saveCurvePointTest = curvePointService.saveCurvePoint(saveCurvePointTest);
+        assertNotNull(saveCurvePointTest);
+        assertEquals(30d, saveCurvePointTest.getTerm().doubleValue());
+    }
 
     @Test
     public void testSaveCurvePoint_Null() {
@@ -58,14 +58,14 @@ public class CurvePointServiceTest {
         assertNull(saveCurvePointTest);
     }
 
-//    @Test
-//    public void testUpdateCurvePoint() {
-//        Integer curveUpdateIdTest = curvePointDeleteTest.getId();
-//        CurvePoint updateCurvePointTest = new CurvePoint(40, 40d, 60d);
-//        updateCurvePointTest = curvePointService.updateCurvePoint(curveUpdateIdTest, updateCurvePointTest);
-//        assertNotNull(updateCurvePointTest);
-//        assertEquals(40d,updateCurvePointTest.getTerm());
-//    }
+    @Test
+    public void testUpdateCurvePoint() {
+        Integer curveUpdateIdTest = curvePointDeleteTest.getId();
+        CurvePoint updateCurvePointTest = new CurvePoint(40, 40d, 60d);
+        updateCurvePointTest = curvePointService.updateCurvePoint(curveUpdateIdTest, updateCurvePointTest);
+        assertNotNull(updateCurvePointTest);
+        assertEquals(40d, updateCurvePointTest.getTerm().doubleValue());
+    }
 
     @Test
     public void testUpdateCurvePoint_Null() {
@@ -74,13 +74,13 @@ public class CurvePointServiceTest {
         assertNull(updateCurvePointTest);
     }
 
-//    @Test
-//    public void testGetCurvePointById() {
-//        Integer curveIdTest = curvePointTest.getId();
-//        CurvePoint curveByIdTest = curvePointService.getCurvePointById(curveIdTest);
-//        assertNotNull(curveByIdTest);
-//        assertEquals(curveByIdTest);
-//    }
+    @Test
+    public void testGetCurvePointById() {
+        Integer curveIdTest = curvePointTest.getId();
+        CurvePoint curveByIdTest = curvePointService.getCurvePointById(curveIdTest);
+        assertNotNull(curveByIdTest);
+        assertEquals(10, curveByIdTest.getCurveId().doubleValue());
+    }
 
     @Test
     public void testGetCurvePointById_Null() {
