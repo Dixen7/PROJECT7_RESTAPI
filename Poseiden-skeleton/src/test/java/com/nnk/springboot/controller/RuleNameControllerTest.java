@@ -25,7 +25,7 @@ import com.nnk.springboot.domain.RuleName;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser("USER")
+@WithMockUser(username = "clement", authorities = {"USER"})
 public class RuleNameControllerTest {
 
     @Autowired

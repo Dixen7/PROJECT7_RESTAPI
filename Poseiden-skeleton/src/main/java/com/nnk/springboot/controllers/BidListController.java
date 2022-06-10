@@ -55,8 +55,7 @@ public class BidListController {
     }
 
     @PostMapping("/bidList/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
-                            BindingResult result, Model model) {
+    public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList, BindingResult result, Model model) {
         if(result.hasErrors()) return "bidList/update";
         bidListService.updateBidList(id, bidList);
         return "redirect:/bidList/list";

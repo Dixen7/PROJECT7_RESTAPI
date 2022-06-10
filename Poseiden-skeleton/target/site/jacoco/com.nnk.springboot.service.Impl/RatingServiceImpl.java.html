@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RatingServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-skeleton</a> &gt; <a href="index.source.html" class="el_package">com.nnk.springboot.service.Impl</a> &gt; <span class="el_source">RatingServiceImpl.java</span></div><h1>RatingServiceImpl.java</h1><pre class="source lang-java linenums">package com.nnk.springboot.service.Impl;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import com.nnk.springboot.service.RatingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import com.nnk.springboot.domain.Rating;
+import com.nnk.springboot.repositories.RatingRepository;
+
+@Service
+public class RatingServiceImpl implements RatingService {
+
+<span class="fc" id="L20">    private static Logger logger = LoggerFactory.getLogger(RatingServiceImpl.class);</span>
+
+    private RatingRepository ratingRepository;
+
+<span class="fc" id="L24">    public RatingServiceImpl(RatingRepository ratingRepository) {</span>
+<span class="fc" id="L25">        this.ratingRepository = ratingRepository;</span>
+<span class="fc" id="L26">    }</span>
+
+    @Override
+    public List&lt;Rating&gt; getAllRating(){
+<span class="fc" id="L30">        logger.info(&quot;Getting a list of all Rating&quot;);</span>
+<span class="fc" id="L31">        return ratingRepository.findAll();</span>
+    }
+
+    @Override
+    @Transactional
+    public Rating saveRating(Rating rating) {
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if(Objects.isNull(rating)) {</span>
+<span class="fc" id="L38">            logger.error(&quot;New Rating must not be null&quot;);</span>
+<span class="fc" id="L39">            return null;</span>
+        }
+<span class="fc" id="L41">        logger.info(&quot;Creating a New Rating&quot;);</span>
+<span class="fc" id="L42">        return ratingRepository.save(rating);</span>
+    }
+
+    @Override
+    @Transactional
+    public Rating updateRating(Integer id, Rating rating) {
+<span class="fc" id="L48">        Optional&lt;Rating&gt; optRating = ratingRepository.findById(id);</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if(optRating.isPresent()) {</span>
+<span class="fc" id="L50">            Rating updatingRating = optRating.get();</span>
+<span class="fc" id="L51">            updatingRating.setMoodysRating(rating.getMoodysRating());</span>
+<span class="fc" id="L52">            updatingRating.setSandPRating(rating.getSandPRating());</span>
+<span class="fc" id="L53">            updatingRating.setFitchRating(rating.getFitchRating());</span>
+<span class="fc" id="L54">            updatingRating.setOrderNumber(rating.getOrderNumber());</span>
+<span class="fc" id="L55">            logger.info(&quot;Rating &quot; + id + &quot; updated&quot;);</span>
+<span class="fc" id="L56">            return ratingRepository.save(updatingRating);</span>
+        } else {
+<span class="fc" id="L58">            logger.error(&quot;Rating with id: &quot; + id + &quot; not found nor updated&quot;);</span>
+<span class="fc" id="L59">            return null;</span>
+        }
+    }
+
+    @Override
+    public Rating getRatingById(Integer id) {
+<span class="fc" id="L65">        Optional&lt;Rating&gt; optRating = ratingRepository.findById(id);</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if(optRating.isPresent()) {</span>
+<span class="fc" id="L67">            logger.info(&quot;Rating with id &quot; + id + &quot; found&quot;);</span>
+<span class="fc" id="L68">            return optRating.get();</span>
+        } else {
+<span class="fc" id="L70">            logger.error(&quot;Rating with id: &quot; + id + &quot; not found&quot;);</span>
+<span class="fc" id="L71">            return null;</span>
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteRatingById(Integer id) {
+<span class="fc" id="L78">        Optional&lt;Rating&gt; optRating = ratingRepository.findById(id);</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if(optRating.isPresent()) {</span>
+<span class="fc" id="L80">            ratingRepository.deleteById(id);</span>
+<span class="fc" id="L81">            logger.info(&quot;Rating with id &quot; + id + &quot; deleted&quot;);</span>
+<span class="fc" id="L82">            return true;</span>
+        } else {
+<span class="fc" id="L84">            logger.error(&quot;Rating with id: &quot; + id + &quot; not found nor deleted&quot;);</span>
+<span class="fc" id="L85">            return false;</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

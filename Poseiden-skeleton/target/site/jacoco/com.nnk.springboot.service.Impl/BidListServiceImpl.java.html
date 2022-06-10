@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BidListServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-skeleton</a> &gt; <a href="index.source.html" class="el_package">com.nnk.springboot.service.Impl</a> &gt; <span class="el_source">BidListServiceImpl.java</span></div><h1>BidListServiceImpl.java</h1><pre class="source lang-java linenums">package com.nnk.springboot.service.Impl;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import com.nnk.springboot.service.BidListService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+
+import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.repositories.BidListRepository;
+
+
+@Service
+public class BidListServiceImpl implements BidListService {
+
+<span class="fc" id="L22">    private static Logger logger = LoggerFactory.getLogger(BidListServiceImpl.class);</span>
+
+    private BidListRepository bidListRepository;
+
+<span class="fc" id="L26">    public BidListServiceImpl(BidListRepository bidListRepository) {</span>
+<span class="fc" id="L27">        this.bidListRepository = bidListRepository;</span>
+<span class="fc" id="L28">    }</span>
+
+    @Override
+    public List&lt;BidList&gt; getAllBidList(){
+<span class="fc" id="L32">        logger.info(&quot;Getting a list of all BidList&quot;);</span>
+<span class="fc" id="L33">        return bidListRepository.findAll();</span>
+    }
+
+    @Override
+    @Transactional
+    public BidList saveBidList (BidList bidList) {
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if(Objects.isNull(bidList)) {</span>
+<span class="fc" id="L40">            logger.error(&quot;New BidList must not be null&quot;);</span>
+<span class="fc" id="L41">            return null;</span>
+        }
+<span class="fc" id="L43">        logger.info(&quot;Creating a New BidList&quot;);</span>
+<span class="fc" id="L44">        return bidListRepository.save(bidList);</span>
+    }
+
+    @Override
+    @Transactional
+    public BidList updateBidList (Integer id, BidList bidList){
+<span class="fc" id="L50">        Optional&lt;BidList&gt; optBidList = bidListRepository.findById(id);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if(optBidList.isPresent()) {</span>
+<span class="fc" id="L52">            BidList updatingBidList = optBidList.get();</span>
+<span class="fc" id="L53">            updatingBidList.setAccount(bidList.getAccount());</span>
+<span class="fc" id="L54">            updatingBidList.setType(bidList.getType());</span>
+<span class="fc" id="L55">            updatingBidList.setBidQuantity(bidList.getBidQuantity());</span>
+<span class="fc" id="L56">            logger.info(&quot;BidList &quot; + id + &quot; updated&quot;);</span>
+<span class="fc" id="L57">            return bidListRepository.save(updatingBidList);</span>
+        } else {
+<span class="fc" id="L59">            logger.error(&quot;BidList with id: &quot; + id + &quot; not found nor updated&quot;);</span>
+<span class="fc" id="L60">            return null;</span>
+        }
+    }
+
+    @Override
+    public BidList getBidListById (Integer id){
+<span class="fc" id="L66">        Optional&lt;BidList&gt; optBidList = bidListRepository.findById(id);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if(optBidList.isPresent()) {</span>
+<span class="fc" id="L68">            logger.info(&quot;BidList with id &quot; + id + &quot; found&quot;);</span>
+<span class="fc" id="L69">            return optBidList.get();</span>
+        } else {
+<span class="fc" id="L71">            logger.error(&quot;BidList with id: &quot; + id + &quot; not found&quot;);</span>
+<span class="fc" id="L72">            return null;</span>
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteBidListById (Integer id){
+<span class="fc" id="L79">        Optional&lt;BidList&gt; optBidList = bidListRepository.findById(id);</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if(optBidList.isPresent()) {</span>
+<span class="fc" id="L81">            bidListRepository.deleteById(id);</span>
+<span class="fc" id="L82">            logger.info(&quot;BidList with id &quot; + id + &quot; deleted&quot;);</span>
+<span class="fc" id="L83">            return true;</span>
+        } else {
+<span class="fc" id="L85">            logger.error(&quot;BidList with id: &quot; + id + &quot; not found nor deleted&quot;);</span>
+<span class="fc" id="L86">            return false;</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

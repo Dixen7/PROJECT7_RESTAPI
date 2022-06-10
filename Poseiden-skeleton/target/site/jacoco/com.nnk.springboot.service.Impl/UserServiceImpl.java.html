@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-skeleton</a> &gt; <a href="index.source.html" class="el_package">com.nnk.springboot.service.Impl</a> &gt; <span class="el_source">UserServiceImpl.java</span></div><h1>UserServiceImpl.java</h1><pre class="source lang-java linenums">package com.nnk.springboot.service.Impl;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import com.nnk.springboot.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.nnk.springboot.domain.User;
+import com.nnk.springboot.repositories.UserRepository;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+<span class="fc" id="L22">    private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);</span>
+
+    private UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository,
+<span class="fc" id="L29">                           PasswordEncoder passwordEncoder) {</span>
+<span class="fc" id="L30">        this.userRepository = userRepository;</span>
+<span class="fc" id="L31">        this.passwordEncoder = passwordEncoder;</span>
+<span class="fc" id="L32">    }</span>
+
+
+    @Override
+    public List&lt;User&gt; getAllUser(){
+<span class="fc" id="L37">        logger.info(&quot;Getting a list of all User&quot;);</span>
+<span class="fc" id="L38">        return userRepository.findAll();</span>
+    }
+
+    @Override
+    @Transactional
+    public User saveUser(User user) {
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if(Objects.isNull(user)) {</span>
+<span class="fc" id="L45">            logger.error(&quot;New User must not be null&quot;);</span>
+<span class="fc" id="L46">            return null;</span>
+        }
+<span class="fc" id="L48">        logger.info(&quot;Creating a New User&quot;);</span>
+<span class="fc" id="L49">        User newUser = new User();</span>
+<span class="fc" id="L50">        newUser.setUsername(user.getUsername());</span>
+<span class="fc" id="L51">        newUser.setPassword(passwordEncoder.encode(user.getPassword()));</span>
+<span class="fc" id="L52">        newUser.setRole(user.getRole());</span>
+<span class="fc" id="L53">        newUser.setFullname(user.getFullname());</span>
+<span class="fc" id="L54">        return userRepository.save(newUser);</span>
+    }
+
+    @Override
+    @Transactional
+    public User updateUser(Integer id, User user) {
+<span class="fc" id="L60">        Optional&lt;User&gt; optUser = userRepository.findById(id);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if(optUser.isPresent()) {</span>
+<span class="fc" id="L62">            User updatingUser = optUser.get();</span>
+<span class="fc" id="L63">            updatingUser.setUsername(user.getUsername());</span>
+<span class="fc" id="L64">            updatingUser.setPassword(passwordEncoder.encode(user.getPassword()));</span>
+<span class="fc" id="L65">            updatingUser.setRole(user.getRole());</span>
+<span class="fc" id="L66">            updatingUser.setFullname(user.getFullname());</span>
+<span class="fc" id="L67">            logger.info(&quot;User &quot; + id + &quot; updated&quot;);</span>
+<span class="fc" id="L68">            return userRepository.save(updatingUser);</span>
+        } else {
+<span class="fc" id="L70">            logger.error(&quot;User with id: &quot; + id + &quot; not found nor updated&quot;);</span>
+<span class="fc" id="L71">            return null;</span>
+        }
+    }
+
+    @Override
+    public User getUserById(Integer id) {
+<span class="fc" id="L77">        Optional&lt;User&gt; optUser = userRepository.findById(id);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        if(optUser.isPresent()) {</span>
+<span class="fc" id="L79">            logger.info(&quot;User with id &quot; + id + &quot; found&quot;);</span>
+<span class="fc" id="L80">            return optUser.get();</span>
+        } else {
+<span class="fc" id="L82">            logger.error(&quot;User with id: &quot; + id + &quot; not found&quot;);</span>
+<span class="fc" id="L83">            return null;</span>
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteUserById(Integer id) {
+<span class="fc" id="L90">        Optional&lt;User&gt; optUser = userRepository.findById(id);</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if(optUser.isPresent()) {</span>
+<span class="fc" id="L92">            userRepository.deleteById(id);</span>
+<span class="fc" id="L93">            logger.info(&quot;User with id &quot; + id + &quot; deleted&quot;);</span>
+<span class="fc" id="L94">            return true;</span>
+        } else {
+<span class="fc" id="L96">            logger.error(&quot;User with id: &quot; + id + &quot; not found nor deleted&quot;);</span>
+<span class="fc" id="L97">            return false;</span>
+        }
+    }
+
+    @Override
+    public User getUserByUserName(String username){
+<span class="fc" id="L103">        return userRepository.findByUsername(username);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
