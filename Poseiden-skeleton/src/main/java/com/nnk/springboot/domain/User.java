@@ -3,6 +3,7 @@ package com.nnk.springboot.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
+import com.nnk.springboot.configuration.ValidPassword;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -20,6 +21,7 @@ public class User {
     private Integer id;
     @NotBlank(message = "Username is mandatory")
     private String username;
+    @ValidPassword
     @NotBlank(message = "Password is mandatory")
     private String password;
     @NotBlank(message = "FullName is mandatory")
