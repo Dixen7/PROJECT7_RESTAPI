@@ -6,7 +6,7 @@ To get a local copy up and running follow these simple example steps:
 ### Prerequisites
 
 Check that you have : 
-* Java 8 installed
+* Java 11 installed
   ```sh
   java -version
   ```
